@@ -38,7 +38,8 @@ void setup()
     myPID.SetSampleTime(1);
     myPID.SetOutputLimits(-255, 255);
 
-    Serial.begin(9600);
+    Serial.begin(115200);  // war auf 9600 !!! transmitter hat aber 115200 baud !!!
+    Serial.flush();
 }
 
 void loop()
@@ -66,25 +67,13 @@ void loop()
     //delay (50);*/   
     
   
-  while (Serial.available() > 0)  // wenn Daten empfangen
-  {  
-    zeichenStart = Serial.read(); // wenn Startzeichen (Header)
-      switch (zeichenStart)
-      {
-      case 'A' : Encoder_Master = Serial.parseInt(); break;  // wenn A wird der folgende wert in den int Encoder_Master übertragen
-      default: break;
-      }
-
-    input = encoderPos ;                // Encoder auslesen (Input ist als float definiert
-    Encoder_Slave = input;              // aus dem float wird hier ein int
+  if(Serial.available())  // wenn Daten empfangen
+  {
+    Encoder_Master = Serial.parseInt();             
+    Encoder_Slave = encoderPos;  // Encoder auslesen (Input ist als float definiert
   }   
   
-  
   Differenz = abs(Encoder_Master - Encoder_Slave);
-
-
-     
-  
 }
 
 void pwmOut(int out) {                                // to H-Bridge board

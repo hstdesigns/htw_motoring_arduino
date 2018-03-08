@@ -23,34 +23,35 @@ void setup()
 {
   Serial.begin(115200);  //Begin Serial to talk to the Serial Monitor   
   Serial1.begin(115200); //Begin Serial to talk to the Rx Arduino
-  Serial.println("Serial Monitor Connected"); 
-  Serial.parseInt();     //clear any garbage in the buffer.  
+  
+  Serial.println("Serial Monitor Connected");
+
+  Serial.flush();     //clear any garbage in the buffer.
+  Serial1.flush();     //clear any garbage in the buffer.
 }
 
 void loop()
 {
   //   From the USB
-  incoming = Serial.available();  
-  while (incoming != 0)           //while there is something to be read
+  if (Serial.available())           //while there is something to be read
   {
     val = Serial.parseInt();
     if (val != 0)
     {
       Serial.print("Received input... Transmitting:  ");
       Serial.println(val);         //Print value to the Serial Monitor
-      Serial1.print(val);          //Send value to the Rx Arduino
+      Serial1.write(val);          //Send value to the Rx Arduino
     }
-    incoming = Serial.available();
+    // incoming = Serial.available();  // Warum diese Zeile ?!?
   }
 
-  //     From the Rx Arduino
-  incoming1 = Serial1.available();  
-  while(incoming1 != 0)           //While there is something to be read
+  //     From the Rx Arduino  
+  if(Serial1.available())           //While there is something to be read
   {
     val = Serial1.parseInt();    //Get new value
     Serial.print("Receiving...  ");    
     Serial.println(val);        //Print new value to the Serial Monitor
-    incoming1 = Serial1.available();
+    //incoming1 = Serial1.available(); // Warum diese Zeile ?!?
   }
 }
 
